@@ -23,5 +23,10 @@ io.sockets.on('connection', function (socket, pseudo) {
     });
 });
 
+app.get('/chat2', (req, res) => {
+    res.sendfile(__dirname + '/Chat2.html');
+})
+
 server.listen(8080);
 //coucou
+
