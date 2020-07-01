@@ -7,17 +7,14 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <style>
-        #zone_chat strong {
-            color: white;
-            background-color: black;
-            padding: 2px;
-        }
-
-        body {
-
-        }
-    </style>
+        <style>
+            #zone_chat strong {
+                padding: 2px;
+            }
+            body{
+                background-color: #292b2c;
+            }
+        </style>
 </head>
 
 
@@ -25,7 +22,7 @@
 
 <body>
 
-    <h1 class="text-center" style="margin-top: 10px;">Test de Turing</h1>
+    <h1 class="text-center text-white" style="margin-top: 10px;">Test de Turing</h1>
 <!-- 
  <a href="/chat2">
         <button class="btn btn-info">2nd chat</button>
@@ -94,7 +91,7 @@
 
         // Ajoute un message dans la page
         function insereMessage(pseudo, message) {
-            $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> ' + message + '</p>');
+            $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> : ' + message + '</p>');
         }
     </script>
 </body>
