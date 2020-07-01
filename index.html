@@ -3,14 +3,12 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Super Chat temps réel !</title>
+    <title>Test de turing</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <style>
-            #zone_chat strong {
-                padding: 2px;
-            }
+            
             body{
                 background-color: #292b2c;
             }
@@ -23,15 +21,10 @@
 <body>
 
     <h1 class="text-center text-white" style="margin-top: 10px;">Test de Turing</h1>
-<!-- 
- <a href="/chat2">
-        <button class="btn btn-info">2nd chat</button>
-    </a>
 
--->
    
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    <div class="row justify-content-center" style="margin-top: 10px;">
+        <div class="col-md-8">
             <div class="card card-body bg-light">
                 <div class="row justify-content-center">
                     <form class="" action="/" method="post" id="formulaire_chat">
@@ -39,14 +32,18 @@
                             autofocus />
                         <input class="btn btn-danger" type="submit" id="envoi_message" value="Envoyer" />
                     </form>
+                    <button class="btn btn-info" onclick="download()" style="margin-left: 15px;">Export</button>
                 </div>
-                <section id="zone_chat">
-
+                
+                <section style="margin-top:10px;" id="zone_chat">
+                    
                 </section>
-
+               
             </div>
 
         </div>
+       
+       
     </div>
 
 
@@ -55,12 +52,14 @@
     <script>
         // Connexion à socket.io
         var socket = io.connect('http://localhost:8080');
+        var stockmessage = "";
+        var monpseudo = "";
 
         // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
         var pseudo = prompt('Quel est votre pseudo ?');
         socket.emit('nouveau_client', pseudo);
         document.title = pseudo + ' - ' + document.title;
-
+        monpseudo = pseudo;
         // Quand on reçoit un message, on l'insère dans la page
         socket.on('message', function (data) {
             insereMessage(data.pseudo, data.message)
@@ -76,23 +75,55 @@
             var message = $('#message').val();
 
 
-            if ($('#message').val() != "") {
+            if  ( message != "" ) {
                 socket.emit('message', message); // Transmet le message aux autres
                 insereMessage(pseudo, message); // Affiche le message aussi sur notre page
                 $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+
+                stockmessage += pseudo + " : " + message + ", ";
+
+                
                 return false; // Permet de bloquer l'envoi "classique" du formulaire
             } else {
 
                 return false;
             }
 
-
         });
 
         // Ajoute un message dans la page
         function insereMessage(pseudo, message) {
-            $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> : ' + message + '</p>');
+            if (monpseudo == pseudo) {
+               
+                $('#zone_chat').prepend('<div class="card card-body bg-info" style="border-radius: 20px; margin:5px;"><span class="text-white"><strong>' + pseudo + '</strong> : ' + message + '</span></div>');
+            }
+            else{
+                console.log("c'est bon ")
+                $('#zone_chat').prepend('<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>' + pseudo + '</strong> : ' + message + '</span></div>');
+
+            }
+            
+
         }
+
+        function testxls(){
+            console.log("Message : " + stockmessage);
+
+        }
+
+        function download() {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(stockmessage));
+            element.setAttribute('download', 'test.txt');
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+        
     </script>
 </body>
 

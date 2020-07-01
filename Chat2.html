@@ -23,12 +23,9 @@
 <body>
 
     <h1 class="text-center text-white" style="margin-top: 10px;">Test de Turing</h1>
-<!-- 
- <a href="/chat2">
-        <button class="btn btn-info">2nd chat</button>
-    </a>
+    
+    <button class="btn btn-info" onclick="download()">Export</button>
 
--->
    
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -55,6 +52,7 @@
     <script>
         // Connexion à socket.io
         var socket = io.connect('http://localhost:8080');
+        var stockmessage = "";
 
         // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
         var pseudo = prompt('Quel est votre pseudo ?');
@@ -76,16 +74,19 @@
             var message = $('#message').val();
 
 
-            if ($('#message').val() != "") {
+            if  ( message != "" ) {
                 socket.emit('message', message); // Transmet le message aux autres
                 insereMessage(pseudo, message); // Affiche le message aussi sur notre page
                 $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+
+                stockmessage += pseudo + " : " + message + ", ";
+
+                
                 return false; // Permet de bloquer l'envoi "classique" du formulaire
             } else {
 
                 return false;
             }
-
 
         });
 
@@ -93,6 +94,25 @@
         function insereMessage(pseudo, message) {
             $('#zone_chat').prepend('<p><strong>' + pseudo + '</strong> : ' + message + '</p>');
         }
+
+        function testxls(){
+            console.log("Message : " + stockmessage);
+
+        }
+
+        function download() {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(stockmessage));
+            element.setAttribute('download', 'test.txt');
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        }
+        
     </script>
 </body>
 
