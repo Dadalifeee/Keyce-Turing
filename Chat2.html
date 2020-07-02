@@ -4,35 +4,26 @@
 <head>
     <meta charset="utf-8" />
     <title>Test de turing</title>
-
-   
-        <style>
-            html{
-                background-color: #292b2c;
-            }
-           
-        </style>
-
-<link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/dark.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/font-icons.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/animate.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/swiper.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/magnific-popup.css" type="text/css" />
-
-<link rel="stylesheet" href="stylesheets/responsive.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/dark.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/font-icons.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/swiper.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/magnific-popup.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/responsive.css" type="text/css" />
 </head>
-
-
-
-
+<style>
+    html{
+        background-color: #292b2c;
+    }
+   
+</style>
 <body style="background-color: #292b2c;">
-
-    <h1 class="text-center text-white" style="margin-top: 10px; background-color: #292b2c;">Test de Turing</h1>
+    <h1 class="text-center text-white" style="margin-top: 20px; background-color: #292b2c;">Test de Turing</h1>
 
    
-    <div class="row justify-content-center" style="margin-top: 7px;">
+    <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-body bg-light" style="border-radius: 10px;">
                 <section id="zone_chat">
@@ -60,55 +51,43 @@
     <script src="javascripts/plugins.js"></script>
     <script src="javascripts/functions.js"></script>
     <script src="javascripts/jquery.gmap.js"></script>
-
-    <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Connexion à socket.io
-        var socket = io.connect('http://localhost:8080');
         var stockmessage = "";
-        var monpseudo = "";
-
-        // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-
         var pseudo = prompt('Quel est votre pseudo ?');
-        if (pseudo == null | pseudo == ""){
+        if (pseudo == null | pseudo.trim() == ""){
             pseudo = "usernm1"
         } 
-        socket.emit('nouveau_client', pseudo);
-        document.title = pseudo + ' - ' + document.title;
+        var monpseudo = "";
         monpseudo = pseudo;
-        // Quand on reçoit un message, on l'insère dans la page
-        socket.on('message', function (data) {
-            insereMessage(data.pseudo, data.message)
-        })
 
-        // Quand un nouveau client se connecte, on affiche l'information
-        socket.on('nouveau_client', function (pseudo) {
-            $('#zone_chat').append('<p><em>' + pseudo + ' à rejoint le Chat !</em></p>');
-        })
+        $('#formulaire_chat').submit(function (e) {
+            e.preventDefault();
+            let message = $('#message').val();
 
-        // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
-        $('#formulaire_chat').submit(function () {
-            var message = $('#message').val();
-
-
-            if  ( message != "" ) {
-                socket.emit('message', message); // Transmet le message aux autres
-                insereMessage(pseudo, message); // Affiche le message aussi sur notre page
-                $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
-
-               
-
-                
-                return false; // Permet de bloquer l'envoi "classique" du formulaire
-            } else {
-
-                return false;
+            if (message != "") {
+                console.log('Msg:', message)
+                const encoreString = encodeURIComponent(message)
+                console.log(`http://10.12.138.39:5000/test?msg=${encoreString}`)
+                fetch(`http://10.12.138.39:5000/test?msg=${encoreString}`, {
+                    mode: 'cors',
+                    headers: {
+                        'Access-Control-Allow-Origin': '*',
+                        "content-type": "application/json"
+                    }
+                }).then((response) => {
+                    return response.json();
+                }).then((data) => {
+                    insereMessage(pseudo, message);
+                    $('#message').val('').focus();
+                    const rndTime = Math.floor(Math.random() * 6) + 1
+                    console.log(rndTime)
+                    setTimeout(function () {
+                        insereMessage('Didier Bourdon', data.text);
+                    }, rndTime * 1000)
+                })
             }
-
         });
 
-        // Ajoute un message dans la page
         function insereMessage(pseudo, message) {
             const date = new Date();
             const dateactuelle = date.getHours() + 'H' +date.getSeconds();
@@ -121,13 +100,6 @@
                 $('#zone_chat').append('<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>'  + dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
 
             }
-            
-
-        }
-
-        function testxls(){
-            console.log("Message : " + stockmessage);
-
         }
 
         function download() {
@@ -142,10 +114,8 @@
 
             document.body.removeChild(element);
         }
-        
+
     </script>
-
-
 </body>
 </body>
 
