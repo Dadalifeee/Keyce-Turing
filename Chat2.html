@@ -5,39 +5,49 @@
     <meta charset="utf-8" />
     <title>Test de turing</title>
 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+   
         <style>
-            
-            body{
+            html{
                 background-color: #292b2c;
             }
+           
         </style>
+
+<link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/dark.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/font-icons.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/animate.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/swiper.css" type="text/css" />
+<link rel="stylesheet" href="stylesheets/magnific-popup.css" type="text/css" />
+
+<link rel="stylesheet" href="stylesheets/responsive.css" type="text/css" />
 </head>
 
 
 
 
-<body>
+<body style="background-color: #292b2c;">
 
-    <h1 class="text-center text-white" style="margin-top: 10px;">Test de Turing</h1>
+    <h1 class="text-center text-white" style="margin-top: 10px; background-color: #292b2c;">Test de Turing</h1>
 
    
-    <div class="row justify-content-center" style="margin-top: 10px;">
+    <div class="row justify-content-center" style="margin-top: 7px;">
         <div class="col-md-8">
-            <div class="card card-body bg-light">
+            <div class="card card-body bg-light" style="border-radius: 10px;">
+                <section id="zone_chat">
+                    
+                </section>
                 <div class="row justify-content-center">
                     <form class="" action="/" method="post" id="formulaire_chat">
                         <input type="text" name="message" id="message" placeholder="Votre message..." size="50"
                             autofocus />
                         <input class="btn btn-danger" type="submit" id="envoi_message" value="Envoyer" />
                     </form>
-                    <button class="btn btn-info" onclick="download()" style="margin-left: 15px;">Export</button>
+                    <button class="btn btn-info" onclick="download()" style="margin-left: 15px; height: 40px;">Export</button>
                 </div>
                 
-                <section style="margin-top:10px;" id="zone_chat">
-                    
-                </section>
+                
                
             </div>
 
@@ -46,8 +56,11 @@
        
     </div>
 
+    <script src="javascripts/jquery.js"></script>
+    <script src="javascripts/plugins.js"></script>
+    <script src="javascripts/functions.js"></script>
+    <script src="javascripts/jquery.gmap.js"></script>
 
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         // Connexion à socket.io
@@ -56,7 +69,11 @@
         var monpseudo = "";
 
         // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
+
         var pseudo = prompt('Quel est votre pseudo ?');
+        if (pseudo == null | pseudo == ""){
+            pseudo = "usernm1"
+        } 
         socket.emit('nouveau_client', pseudo);
         document.title = pseudo + ' - ' + document.title;
         monpseudo = pseudo;
@@ -67,7 +84,7 @@
 
         // Quand un nouveau client se connecte, on affiche l'information
         socket.on('nouveau_client', function (pseudo) {
-            $('#zone_chat').prepend('<p><em>' + pseudo + ' a rejoint le Chat !</em></p>');
+            $('#zone_chat').append('<p><em>' + pseudo + ' à rejoint le Chat !</em></p>');
         })
 
         // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
@@ -80,7 +97,7 @@
                 insereMessage(pseudo, message); // Affiche le message aussi sur notre page
                 $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
 
-                stockmessage += pseudo + " : " + message + ", ";
+               
 
                 
                 return false; // Permet de bloquer l'envoi "classique" du formulaire
@@ -93,13 +110,15 @@
 
         // Ajoute un message dans la page
         function insereMessage(pseudo, message) {
+            const date = new Date();
+            const dateactuelle = date.getHours() + 'H' +date.getSeconds();
+            stockmessage += dateactuelle +" "+ pseudo + " : " + message + "\r\n" ;
             if (monpseudo == pseudo) {
                
-                $('#zone_chat').prepend('<div class="card card-body bg-info" style="border-radius: 20px; margin:5px;"><span class="text-white"><strong>' + pseudo + '</strong> : ' + message + '</span></div>');
+                $('#zone_chat').append('<div class="card card-body bg-info" style="border-radius: 20px; margin:5px;"><span class="text-white"><strong>' + dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
             }
             else{
-                console.log("c'est bon ")
-                $('#zone_chat').prepend('<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>' + pseudo + '</strong> : ' + message + '</span></div>');
+                $('#zone_chat').append('<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>'  + dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
 
             }
             
@@ -125,6 +144,9 @@
         }
         
     </script>
+
+
+</body>
 </body>
 
 </html>
