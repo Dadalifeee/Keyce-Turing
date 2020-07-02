@@ -5,23 +5,22 @@
     <meta charset="utf-8" />
     <title>Test de turing</title>
 
-   
-        <style>
-            html{
-                background-color: #292b2c;
-            }
-           
-        </style>
 
-<link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/dark.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/font-icons.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/animate.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/swiper.css" type="text/css" />
-<link rel="stylesheet" href="stylesheets/magnific-popup.css" type="text/css" />
+    <style>
+        html {
+            background-color: #292b2c;
+        }
+    </style>
 
-<link rel="stylesheet" href="stylesheets/responsive.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/dark.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/font-icons.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/animate.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/swiper.css" type="text/css" />
+    <link rel="stylesheet" href="stylesheets/magnific-popup.css" type="text/css" />
+
+    <link rel="stylesheet" href="stylesheets/responsive.css" type="text/css" />
 </head>
 
 
@@ -29,14 +28,13 @@
 
 <body style="background-color: #292b2c;">
 
-    <h1 class="text-center text-white" style="margin-top: 10px; background-color: #292b2c;">Test de Turing</h1>
+    <h1 class="text-center text-white" style="margin-top: 20px; background-color: #292b2c;">Test de Turing</h1>
 
-   
-    <div class="row justify-content-center" style="margin-top: 7px;">
+
+    <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card card-body bg-light" style="border-radius: 10px;">
                 <section id="zone_chat">
-                    
                 </section>
                 <div class="row justify-content-center">
                     <form class="" action="/" method="post" id="formulaire_chat">
@@ -44,16 +42,11 @@
                             autofocus />
                         <input class="btn btn-danger" type="submit" id="envoi_message" value="Envoyer" />
                     </form>
-                    <button class="btn btn-info" onclick="download()" style="margin-left: 15px; height: 40px;">Export</button>
+                    <button class="btn btn-info" onclick="download()"
+                        style="margin-left: 15px; height: 40px;">Export</button>
                 </div>
-                
-                
-               
             </div>
-
         </div>
-       
-       
     </div>
 
     <script src="javascripts/jquery.js"></script>
@@ -63,44 +56,39 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        // Connexion à socket.io
         var socket = io.connect('http://localhost:8080');
         var stockmessage = "";
         var monpseudo = "";
-
-        // On demande le pseudo, on l'envoie au serveur et on l'affiche dans le titre
-
         var pseudo = prompt('Quel est votre pseudo ?');
-        if (pseudo == null | pseudo == ""){
+        if (pseudo == null || pseudo.trim() == "") {
+
             pseudo = "usernm1"
-        } 
+        }
+        console.log(pseudo);
         socket.emit('nouveau_client', pseudo);
         document.title = pseudo + ' - ' + document.title;
         monpseudo = pseudo;
-        // Quand on reçoit un message, on l'insère dans la page
+
         socket.on('message', function (data) {
             insereMessage(data.pseudo, data.message)
         })
 
-        // Quand un nouveau client se connecte, on affiche l'information
+
         socket.on('nouveau_client', function (pseudo) {
             $('#zone_chat').append('<p><em>' + pseudo + ' à rejoint le Chat !</em></p>');
         })
 
-        // Lorsqu'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+
         $('#formulaire_chat').submit(function () {
             var message = $('#message').val();
 
 
-            if  ( message != "" ) {
-                socket.emit('message', message); // Transmet le message aux autres
-                insereMessage(pseudo, message); // Affiche le message aussi sur notre page
-                $('#message').val('').focus(); // Vide la zone de Chat et remet le focus dessus
+            if (message != "") {
+                socket.emit('message', message);
+                insereMessage(pseudo, message);
+                $('#message').val('').focus();
 
-               
-
-                
-                return false; // Permet de bloquer l'envoi "classique" du formulaire
+                return false;
             } else {
 
                 return false;
@@ -111,21 +99,24 @@
         // Ajoute un message dans la page
         function insereMessage(pseudo, message) {
             const date = new Date();
-            const dateactuelle = date.getHours() + 'H' +date.getSeconds();
-            stockmessage += dateactuelle +" "+ pseudo + " : " + message + "\r\n" ;
+            const dateactuelle = date.getHours() + 'H' + date.getSeconds();
+            stockmessage += dateactuelle + " " + pseudo + " : " + message + "\r\n";
             if (monpseudo == pseudo) {
-               
-                $('#zone_chat').append('<div class="card card-body bg-info" style="border-radius: 20px; margin:5px;"><span class="text-white"><strong>' + dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
-            }
-            else{
-                $('#zone_chat').append('<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>'  + dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
+
+                $('#zone_chat').append(
+                    '<div class="card card-body bg-info" style="border-radius: 20px; margin:5px;"><span class="text-white"><strong>' +
+                    dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
+            } else {
+                $('#zone_chat').append(
+                    '<div class="card card-body" style="border-radius: 20px; margin:5px;"><span><strong>' +
+                    dateactuelle + " " + pseudo + '</strong> : ' + message + '</span></div>');
 
             }
-            
+
 
         }
 
-        function testxls(){
+        function testxls() {
             console.log("Message : " + stockmessage);
 
         }
@@ -142,7 +133,6 @@
 
             document.body.removeChild(element);
         }
-        
     </script>
 
 
