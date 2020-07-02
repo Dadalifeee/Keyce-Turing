@@ -1,12 +1,18 @@
-var app = require('express')(),
+var express = require('express');
+var app = express();
+
     server = require('http').createServer(app),
     io = require('socket.io').listen(server),
     ent = require('ent') // Permet de bloquer les caractères HTML (sécurité équivalente à htmlentities en PHP)
-
+app.use(express.static('public'));
 // Chargement de la page index.html
 app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+  res.sendfile('index.html');
 });
+
+app.get('/chat2', function (req, res) {
+    res.sendfile(__dirname + '/Chat2.html');
+  });
 
 io.sockets.on('connection', function (socket, pseudo) {
     // Dès qu'on nous donne un pseudo, on le stocke en variable de session et on informe les autres personnes
@@ -22,9 +28,5 @@ io.sockets.on('connection', function (socket, pseudo) {
         socket.broadcast.emit('message', {pseudo: socket.pseudo, message: message});
     });
 });
-
-app.get('/chat2', function (req, res) {
-    res.sendfile(__dirname + '/Chat2.html');
-  });
 
 server.listen(8080);
